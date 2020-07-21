@@ -69,12 +69,9 @@ and connect it to the user ${YELLOW}$u${NC}.
 "
 
 (git clone git@github.com:Jkutkut/$repoName.git ||
-error "not possible to clone")
+error "not possible to clone") &&
 
 echo "--------------------------------------
 ${LGREEN}
 Repository cloned${NC}
 "
-
-
-# git@github.com:Jkutkut/ .git
