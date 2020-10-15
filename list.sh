@@ -10,8 +10,19 @@ gBG='\e[1;42m';
 TITLE='\033[38;5;33m';
 
 # functions
-print_option()     { printf "   $1                       "; }
-print_selected()   { printf "   ${sBG}$1${NC}                       ";}
+setMessage(){
+    if [ $# -eq 1 ]; then # If no offset given, supose 0
+        offs=0;
+    else # If given, use it
+        offs=$2;
+    fi
+    l=$(tput cols); # cols of the terminal
+    gap=$(($l-${#1}-$offs)); # characters I can fit between the end of the message and the end of the terminal
+    
+    printf %${offs}s; # Print offset
+    printf $4$1${NC}; # print message with the color given
+    printf %${gap}s; # print the end of the line with blank characters
+}
 
 # variables
 titleH=4;
@@ -40,16 +51,17 @@ while true; do
     for i in `seq 0 $height`; do
         tput cup $(($titleH+$idx+$titleSpace));
         if [ $i -eq $selected ]; then
-            print_selected "here"
+            printf "${sBG}";
+            setMessage "here" 3 $sBG;
+            printf "${NC}";
         else
-            print_option "$i";
+            setMessage $i 3;
         fi
         idx=$(($idx+1));
     done
 
     # user key control
     k=$(./keyInput.sh);
-    # echo "k = $k"
     case $k in
         EN) break;;
         UP) 
