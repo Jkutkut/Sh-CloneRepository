@@ -10,8 +10,6 @@ case $mode in
     'q') echo QUITTING ; exit ;;
     '[A') echo UP ;;
     '[B') echo DN ;;
-    # '[D') echo LEFT ;;
-    # '[C') echo RIGHT ;;
     '') echo EN;;
     *) >&2 echo 'ERR bad input';;
 esac
