@@ -31,7 +31,7 @@ height=$(($(tput lines)-1-$titleH-$titleSpace-1));
 
 
 # code
-for i in `seq 0 $(tput lines)`; do printf "\n"; done
+for i in `seq 0 $(tput lines)`; do printf "\n"; done # Clear the terminal
 tput cup 0;
 printf "${TITLE} ____  ____  ____   __        __    __  ____  ____ 
 (  _ \(  __)(  _ \ /  \  ___ (  )  (  )/ ___)(_  _)
@@ -40,6 +40,11 @@ printf "${TITLE} ____  ____  ____   __        __    __  ____  ____
 
 trap "cursor_blink_on; stty echo; printf '\n'; exit" 2
 setterm -cursor off; # cursor_blink_off
+
+# Get repo names, store them on a temporal file
+curl -u jkutkut:9f3097b9f4e189766e98c92775743249aa6d565f -s "https://api.github.com/users/jkutkut/repos?type=all&per_page=100" |
+jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
+REPOS=$(tail -n +$start temp.txt | head -n $get);
 
 
 
@@ -71,7 +76,7 @@ while true; do
             selected=$(($selected+1));
             if [ $selected -ge $(($height+1)) ]; then selected=0; fi;;
     esac
-    # break;
 done
 echo "";
 setterm -cursor on; # cursor_blink_on
+rm temp.txt; # Remove temporal file
