@@ -53,11 +53,7 @@ stty -echo;
 # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
 /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
 
-
-
-# OP=(hola que tal);
-
-
+start=0;
 selected=2;
 while true; do
     idx=0;
