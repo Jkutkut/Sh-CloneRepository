@@ -104,7 +104,7 @@ done
 repo=$(getLine temp.txt $(( ($start+$selected) % $repoL + 1)) 1);
 # rm temp.txt; # Remove temporal file
 
-echo "\nSelected option: $repo";
-
 setterm -cursor on; # cursor_blink_on
-stty echo;
+stty echo; # Show input text again
+
+echo "\nSelected option: $repo";
