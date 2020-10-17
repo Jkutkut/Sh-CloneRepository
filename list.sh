@@ -43,7 +43,6 @@ printf "${TITLE} ____  ____  ____   __        __    __  ____  ____
  )   / ) _)  ) __/( () )(___)/ (_/\ )( \___ \  )(  
 (__\_)(____)(__)   \__/      \____/(__)(____/ (__)${NC}"
 
-trap "cursor_blink_on; stty echo; printf '\n'; exit" 2
 setterm -cursor off; # cursor_blink_off
 stty -echo;
 
@@ -53,20 +52,23 @@ stty -echo;
 # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
 /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
 
+repoL=$(wc -l < temp.txt); #Length of the file with the repo names
+
+# trap "echo \"exit\"; status=fail; setterm -cursor on; stty echo; rm temp.txt; exit;" 2;
+trap "echo \"exit\"; status=fail; setterm -cursor on; stty echo; exit;" 2;
+
 start=0;
 selected=2;
 while true; do
     idx=0;
     for i in `seq 0 $height`; do
         tput cup $(($titleH+$idx+$titleSpace));
-        index=$(($i+1));
+        index=$(( ($start+$i) % $repoL + 1));#Get the lenght of the element
         text=$(getLine temp.txt $index 1);
 
 
         if [ $i -eq $selected ]; then
-            # printf "${sBG}";
             setMessage $text 3 $sBG;
-            printf "${NC}";
         else
             setMessage $text 3;
         fi
@@ -74,18 +76,35 @@ while true; do
     done
 
     # user key control
-    k=$(./keyInput.sh);
+    k=$(./keyInput.sh); # Get and analize the input
     case $k in
-        EN) break;;
-        UP) 
-            selected=$(($selected-1));
-            if [ $selected -lt 0 ]; then selected=$(($height)); fi;;
+        EN) break;; # If enter pressed, exit
+        UP) # If up arrow pressed
+            selected=$(($selected-1)); # Selector go up
+            if [ $selected -lt 0 ]; then # If selector out of screen
+                selected=0; # Selector now on top
+                start=$(($start-1)); # Move all repos down
+                if [ $start -lt 0 ]; then # If out of index
+                    start=$repoL; # Set index to the last one
+                fi
+            fi
+        ;;
         DN)
             selected=$(($selected+1));
-            if [ $selected -ge $(($height+1)) ]; then selected=0; fi;;
+            if [ $selected -ge $(($height+1)) ]; then
+                selected=$height;
+                start=$(($start+1)); # Move all repos up
+                if [ $start -ge $(($repoL+1)) ]; then
+                    start=0;
+                fi
+            fi;;
     esac
 done
-echo "";
+
+repo=$(getLine temp.txt $(( ($start+$selected) % $repoL + 1)) 1);
+# rm temp.txt; # Remove temporal file
+
+echo "\nSelected option: $repo";
+
 setterm -cursor on; # cursor_blink_on
 stty echo;
-# rm temp.txt; # Remove temporal file
