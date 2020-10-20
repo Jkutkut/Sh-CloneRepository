@@ -113,7 +113,7 @@ trap "endCode \"fail\"" 2; # If code forced to end, run endCode first
 # curl -u  -s "https://api.github.com/users/jkutkut/repos?type=all&per_page=100" |
 # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
 /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
-repoL=$(wc -l < temp.txt); #Length of the file with the repo names
+repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
 
 
 
@@ -135,11 +135,11 @@ while true; do
         ;;
     esac
 
-    if [ $selected -lt 0 ]; then # If selector out of screen
+    if [ $selected -eq -1 ]; then # If selector out of screen
         selected=0; # Selector now on top
         start=$(($start-1)); # Move all repos down
-        if [ $start -lt 0 ]; then # If out of index
-            start=$repoL; # Set index to the last one
+        if [ $start -eq -1 ]; then # If out of index
+            start=$(($repoL - 1)); # Set index to the last one
         fi
 
     elif [ $selected -ge $(($height+1)) ]; then
