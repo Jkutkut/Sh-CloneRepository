@@ -38,7 +38,6 @@ updateScreen(){
             text=$(getLine temp.txt $index 1);
 
             if [ $i -eq $selected ]; then
-                touch ele.txt
                 setMessage $text 3 $sBG;
             else
                 setMessage $text 3;
@@ -57,7 +56,6 @@ updateScreen(){
             text=$(getLine temp.txt $index 1);
             
             if [ $i -eq 0 ]; then
-                touch ele.txt
                 setMessage $text 3 $sBG;
             else
                 setMessage $text 3;
