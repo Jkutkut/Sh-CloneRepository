@@ -1,14 +1,19 @@
 #!/bin/sh
 
 #colors:
-  NC='\033[0m' # No Color
-  RED='\033[0;31m'
-  GREEN='\033[0;32m'
-  LRED='\033[1;31m'
-  LGREEN='\033[1;32m'
-  YELLOW='\033[1;33m'
-  LBLUE='\033[1;34m'
-  TITLE='\033[38;5;33m'
+NC='\033[0m' # No Color
+sBG='\e[1;7m';
+rBG='\e[1;41m';
+bBG='\e[1;44m';
+gBG='\e[1;42m';
+RED='\033[0;31m';
+GREEN='\033[0;32m';
+LRED='\033[1;31m';
+LGREEN='\033[1;32m';
+YELLOW='\033[1;33m';
+LBLUE='\033[1;34m';
+TITLE='\033[38;5;33m';
+
 
 # FUNCTIONS
 askResponse=""; #When executing the function ask(), the response will be stored here
@@ -23,16 +28,30 @@ error(){ # function to generate the error messages. If executed, ends the script
     $1${NC}";
   exit 1
 }
+setMessage(){
+    if [ $# -eq 1 ]; then # If no offset given, supose 0
+        offs=0;
+    else # If given, use it
+        offs=$2;
+    fi
+    l=$(tput cols); # cols of the terminal
+    gap=$(($l-${#1}-$offs)); # characters I can fit between the end of the message and the end of the terminal
+    
+    printf %${offs}s; # Print offset
+    printf $3$1${NC}; # print message with the color given
+    printf %${gap}s; # print the end of the line with blank characters
+}
+getLine(){
+    start=$2;
+    get=$3;
+    echo $(tail -n +$start $1 | head -n $get);
+}
 
 
-echo "${TITLE}   _____ _                  _____                      _ _                   
-  / ____| |                |  __ \                    (_) |                  
- | |    | | ___  _ __   ___| |__) |___ _ __   ___  ___ _| |_ ___  _ __ _   _ 
- | |    | |/ _ \| '_ \ / _ \  _  // _ \ '_ \ / _ \/ __| | __/ _ \| '__| | | |
- | |____| | (_) | | | |  __/ | \ \  __/ |_) | (_) \__ \ | || (_) | |  | |_| |
-  \_____|_|\___/|_| |_|\___|_|  \_\___| .__/ \___/|___/_|\__\___/|_|   \__, |
-                                      | |                               __/ |
-                                      |_|                              |___/ ${NC}"
+echo "${TITLE}  ___  __     __   __ _  ____  ____  ____  ____   __  
+ / __)(  )   /  \ (  ( \(  __)(  _ \(  __)(  _ \ /  \ 
+( (__ / (_/\( () )/    / ) _)  )   / ) _)  ) __/( () )
+ \___)\____/ \__/ \_)__)(____)(__\_)(____)(__)   \__/${NC}"
 
 
 u="jkutkut"
