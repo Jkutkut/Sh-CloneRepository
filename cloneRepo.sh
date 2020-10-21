@@ -206,7 +206,7 @@ while true; do
       # curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
       # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
       
-      cp repositorios.txt temp.txt; # Option 2
+      # cp repositorios.txt temp.txt; # Option 2
 
       # At this point, the code should have the temp.txt file created
       if [ -e temp.txt ];then # If file exist
