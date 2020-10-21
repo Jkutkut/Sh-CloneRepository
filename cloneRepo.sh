@@ -186,9 +186,12 @@ while true; do
 
       # Get repo names, store them on a temporal file
       /usr/bin/printf "\n\nGetting al the repos:";
-      # curl -u  -s "https://api.github.com/users/jkutkut/repos?type=all&per_page=100" |
-      # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
-      cp repositorios.txt temp.txt;
+      # Here we have two options:
+      #     - Have a file with the repos (one each line). Then edit the line to copy the content to a file named "temp.txt"
+      #     - Use the following code to get it:
+      # curl -u  -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
+      # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
+      # cp repositorios.txt temp.txt; # Option 2
       /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
       repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
 
@@ -257,8 +260,8 @@ Atempting to clone the reposititory:
 "
 (cd $fullDirectory ||
 endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found") &&
-# (git clone git@github.com:$u/$repoName.git ||
-# error "not possible to clone") &&
+(git clone git@github.com:$u/$repoName.git ||
+endCode "fail" "Not possible to clone") &&
 
 echo "--------------------------------------
 ${LGREEN}
