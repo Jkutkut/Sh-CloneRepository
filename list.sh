@@ -19,10 +19,7 @@ init(){
     # code
     for i in `seq 0 $(tput lines)`; do printf "\n"; done # Clear the terminal
     tput cup 0; # Set cursor on the top of the screen
-    printf "${TITLE} ____  ____  ____   __        __    __  ____  ____ 
-(  _ \(  __)(  _ \ /  \  ___ (  )  (  )/ ___)(_  _)
- )   / ) _)  ) __/( () )(___)/ (_/\ )( \___ \  )(  
-(__\_)(____)(__)   \__/      \____/(__)(____/ (__)${NC}"
+    printf "${TITLE}$1${NC}"
 
     setterm -cursor off; # cursor_blink_off
     stty -echo;
@@ -103,7 +100,10 @@ endCode(){
 
 
 
-init; # Init zone
+init " ____  ____  ____   __        __    __  ____  ____ 
+(  _ \(  __)(  _ \ /  \  ___ (  )  (  )/ ___)(_  _)
+ )   / ) _)  ) __/( () )(___)/ (_/\ )( \___ \  )(  
+(__\_)(____)(__)   \__/      \____/(__)(____/ (__)"; # Init zone
 trap 'init' WINCH # When window resized, update screen with the new size
 trap "endCode \"fail\"" 2; # If code forced to end, run endCode first
 
