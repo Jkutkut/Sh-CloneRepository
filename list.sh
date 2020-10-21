@@ -91,13 +91,14 @@ endCode(){
     stty echo; # Show input text again
 
     if [ $1 = "fail" ]; then
-        echo "exit";
+        echo "${RED}~~~~~~~~  ERROR ~~~~~~~~
+    $2${NC}";
     else
         repo=$(getLine temp.txt $(( ($start+$selected) % $repoL + 1)) 1);
         echo "\nSelected option: $repo";
     fi
     echo $1;
-    exit
+    exit 1;
 }
 
 
