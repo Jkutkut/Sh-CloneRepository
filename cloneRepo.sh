@@ -22,11 +22,8 @@ ask(){ # to do the read in terminal, save the response in askResponse
   textEnd=$2;
   read -p "$(echo ${LBLUE}"$text"${NC} $textEnd)->" askResponse;
 }
-error(){ # function to generate the error messages. If executed, ends the script.
-  err=$1;
-  echo "${RED}~~~~~~~~  ERROR ~~~~~~~~
-    $1${NC}";
-  exit 1
+showSettings(){
+  printf "Current settings:\n\tUser: ${YELLOW}$u${NC}\n\tDirectory: ${YELLOW}$fullDirectory${NC}\n\n";
 }
 
 init(){
@@ -128,17 +125,13 @@ getLine(){
 }
 
 endCode(){
-    # rm temp.txt; # Remove temporal file
+    rm -f temp.txt; # Remove temporal file
     setterm -cursor on; # cursor_blink_on
     stty echo; # Show input text again
 
     if [ ! "$2" = "noOutput" ]; then # if no "no output" given, give output
       if [ $1 = "fail" ]; then
-          echo "\n${RED}~~~~~~~~  ERROR ~~~~~~~~
-      $2${NC}";
-      else
-          repo=$(getLine temp.txt $(( ($start+$selected) % $repoL + 1)) 1);
-          echo "\nSelected option: $repo";
+          echo "\n${RED}~~~~~~~~  ERROR ~~~~~~~~\n$2${NC}";
       fi
     fi
     exit 1;
@@ -146,7 +139,7 @@ endCode(){
 
 # Variables:
 u="jkutkut" # Default user name
-fullDirectory=~/github/$repoName # Default dir to store the repository
+fullDirectory=~/github/ # Default dir to store the repository
 
 # Code:
 
@@ -157,19 +150,92 @@ trap "endCode fail \"code force-ended\"" 2; # If code forced to end, run endCode
 while true; do
   init "main" "textmode"; # Init zone
   
-  start=0; selected=2;
+  
   tput cup $(($titleH+$titleSpace)); # Set cursor at initial position
   
+  showSettings;
   ask "Name of the repository?" "[*list, *settings]";
   case $askResponse in
-    list|l)
-    ;;
     options|settings|s|o) # Settings
       while true; do
         init "settings" "textmode"; # Init zone
-        echo "\nCurrent settings:\n\tUser: ${YELLOW}" $u "${NC}\n\tDirectory: ${YELLOW}" $fullDirectory "${NC}\n"; 
+        tput cup $(($titleH+$titleSpace)); # Set cursor at initial position
+        showSettings;
         ask "What do you want to change?" "[user, directory, exit]";
+
+        case $askResponse in
+          user|u)
+            ask "Name of the user?" "";
+            u=$askResponse;
+          ;;
+          directory|dir|d)
+            ask "Enter the custom directory" "";
+            fullDirectory=$askResponse;
+          ;;
+          exit|e)
+            break;
+          ;;
+        esac
+
       done
+    ;;
+    list|l) # List
+      # Show a list with the avalible repositories of the user ($u) given
+      init "list" "optionmode"; # Init zone
+      trap 'init' WINCH # When window resized, update screen with the new size
+
+      # Get repo names, store them on a temporal file
+      /usr/bin/printf "\n\nGetting al the repos:";
+      # curl -u  -s "https://api.github.com/users/jkutkut/repos?type=all&per_page=100" |
+      # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt;
+      cp repositorios.txt temp.txt;
+      /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
+      repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
+
+      start=0;
+      selected=2;
+      updateScreen "full";
+      while true; do
+        oldHeight=$height;
+
+        # user key control
+        k=$(./keyInput.sh); # Get the input
+        case $k in # analize the input
+          EN) break;; # If enter pressed, exit
+          UP) # If up arrow pressed
+              selected=$(($selected-1)); # Selector go up
+          ;;
+          DN)
+              selected=$(($selected+1));
+          ;;
+        esac
+
+        if [ $selected -eq -1 ]; then # If selector out of screen
+          selected=0; # Selector now on top
+          start=$(($start-1)); # Move all repos down
+          if [ $start -eq -1 ]; then # If out of index
+            start=$(($repoL - 1)); # Set index to the last one
+          fi
+
+        elif [ $selected -ge $(($height+1)) ]; then
+          selected=$height;
+          start=$(($start+1)); # Move all repos up
+          if [ $start -ge $(($repoL+1)) ]; then
+            start=0;
+          fi
+        else
+          if [ $oldHeight -eq $height ]; then # If no change on the height of the screen
+            updateScreen "normal";
+            continue;
+          else # else, update the "full" screen with the new height
+            init "list"; # Clear screen, get new height based on the title, titleGap and print it with the fixed position
+          fi
+        fi
+        updateScreen "full";
+      done
+      # If here, the code has succesfully helped the user to choose the repository
+      repoName=$(getLine temp.txt $(( ($start+$selected) % $repoL + 1)) 1);
+      break;
     ;;
     *) # If no special command given
       repoName=$askResponse; # Store the name of the Repository.
@@ -179,13 +245,18 @@ while true; do
 done
 
 # At this point, everything should be ready to clone:
+
+init "main" "textmode"; # Init zone
+tput cup $(($titleH+$titleSpace)); # Set cursor at initial position
+
 echo "
 Atempting to clone the reposititory:
 \tUser: ${YELLOW}$u${NC}.
 \tRepository name: ${YELLOW}$repoName${NC}
 \tDirectory to save it: ${YELLOW}$fullDirectory${NC}
 "
-
+(cd $fullDirectory ||
+endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found") &&
 # (git clone git@github.com:$u/$repoName.git ||
 # error "not possible to clone") &&
 
