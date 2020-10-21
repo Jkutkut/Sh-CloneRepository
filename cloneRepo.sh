@@ -28,24 +28,8 @@ error(){ # function to generate the error messages. If executed, ends the script
     $1${NC}";
   exit 1
 }
-setMessage(){
-    if [ $# -eq 1 ]; then # If no offset given, supose 0
-        offs=0;
-    else # If given, use it
-        offs=$2;
-    fi
-    l=$(tput cols); # cols of the terminal
-    gap=$(($l-${#1}-$offs)); # characters I can fit between the end of the message and the end of the terminal
-    
-    printf %${offs}s; # Print offset
-    printf $3$1${NC}; # print message with the color given
-    printf %${gap}s; # print the end of the line with blank characters
-}
-getLine(){
-    start=$2;
-    get=$3;
-    echo $(tail -n +$start $1 | head -n $get);
-}
+
+
 
 
 echo "${TITLE}  ___  __     __   __ _  ____  ____  ____  ____   __  
