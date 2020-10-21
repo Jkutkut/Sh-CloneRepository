@@ -150,13 +150,12 @@ endCode(){
     exit 1;
 }
 
-# Variables:
+# Constants:
 u="Jkutkut"; # Default user name
 fullDirectory=~/github/; # Default dir to store the repository
 
+
 # Code:
-
-
 trap 'init' WINCH # When window resized, update screen with the new size
 trap "endCode fail \"code force-ended\"" 2; # If code forced to end, run endCode first
 
