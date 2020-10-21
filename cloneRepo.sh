@@ -1,4 +1,4 @@
-#!/bin/sh
+# !/bin/sh
 
 #colors:
 NC='\033[0m' # No Color
@@ -24,6 +24,19 @@ ask(){ # to do the read in terminal, save the response in askResponse
 }
 showSettings(){
   printf "Current settings:\n\tUser: ${YELLOW}$u${NC}\n\tDirectory: ${YELLOW}$fullDirectory${NC}\n\n";
+}
+getArrow(){
+    echo $(/usr/bin/env bash -c "escape_char=\$(printf '\u1b');
+    read -rsn1 mode # get 1 character
+    if [[ \$mode == \$escape_char ]]; then
+        read -rsn2 mode; # read 2 more chars
+    fi
+    case \$mode in
+        '[A') echo UP; exit 0;;
+        '[B') echo DN ;;
+        '') echo EN;;
+        *) >&2 echo 'ERR bad input';;
+    esac");
 }
 
 init(){
@@ -189,11 +202,23 @@ while true; do
       # Here we have two options:
       #     - Have a file with the repos (one each line). Then edit the line to copy the content to a file named "temp.txt"
       #     - Use the following code to get it:
-      # curl -u  -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
+
+      # curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
       # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
-      # cp repositorios.txt temp.txt; # Option 2
-      /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
-      repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
+      
+      cp repositorios.txt temp.txt; # Option 2
+
+      # At this point, the code should have the temp.txt file created
+      if [ -e temp.txt ];then # If file exist
+        /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
+        repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
+      else # if file does not exist, error
+        echo "\n${RED}~~~~~~~~  ERROR ~~~~~~~~\nNot able to get the repositories. Please check the parameters used are correct and the README.md file.${NC}";
+        sleep 1;
+        echo "Going back to main section in 5s"
+        sleep 5;
+        continue; # Go back to the main section
+      fi
 
       start=0;
       selected=2;
@@ -202,13 +227,12 @@ while true; do
         oldHeight=$height;
 
         # user key control
-        k=$(./keyInput.sh); # Get the input
-        case $k in # analize the input
+        case $(getArrow) in # Get and analize the arrow input
           EN) break;; # If enter pressed, exit
           UP) # If up arrow pressed
               selected=$(($selected-1)); # Selector go up
           ;;
-          DN)
+          DN) # If down arrow pressed
               selected=$(($selected+1));
           ;;
         esac
