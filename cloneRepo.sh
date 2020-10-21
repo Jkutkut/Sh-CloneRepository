@@ -151,8 +151,8 @@ endCode(){
 }
 
 # Variables:
-u="jkutkut" # Default user name
-fullDirectory=~/github/ # Default dir to store the repository
+u="Jkutkut"; # Default user name
+fullDirectory=~/github/; # Default dir to store the repository
 
 # Code:
 
