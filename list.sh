@@ -19,7 +19,21 @@ init(){
     # code
     for i in `seq 0 $(tput lines)`; do printf "\n"; done # Clear the terminal
     tput cup 0; # Set cursor on the top of the screen
-    printf "${TITLE}$1${NC}"
+
+    case $1 in
+        main)
+            printf "${TITLE}  ___  __     __   __ _  ____  ____  ____  ____   __  
+ / __)(  )   /  \ (  ( \(  __)(  _ \(  __)(  _ \ /  \ 
+( (__ / (_/\( () )/    / ) _)  )   / ) _)  ) __/( () )
+ \___)\____/ \__/ \_)__)(____)(__\_)(____)(__)   \__/${NC}";
+        ;;
+        list)
+            printf "${TITLE} ____  ____  ____   __        __    __  ____  ____ 
+(  _ \(  __)(  _ \ /  \  ___ (  )  (  )/ ___)(_  _)
+ )   / ) _)  ) __/( () )(___)/ (_/\ )( \___ \  )(  
+(__\_)(____)(__)   \__/      \____/(__)(____/ (__)${NC}"
+        ;;
+    esac
 
     setterm -cursor off; # cursor_blink_off
     stty -echo;
@@ -100,10 +114,7 @@ endCode(){
 
 
 
-init " ____  ____  ____   __        __    __  ____  ____ 
-(  _ \(  __)(  _ \ /  \  ___ (  )  (  )/ ___)(_  _)
- )   / ) _)  ) __/( () )(___)/ (_/\ )( \___ \  )(  
-(__\_)(____)(__)   \__/      \____/(__)(____/ (__)"; # Init zone
+init "list"; # Init zone
 trap 'init' WINCH # When window resized, update screen with the new size
 trap "endCode \"fail\"" 2; # If code forced to end, run endCode first
 
@@ -122,9 +133,11 @@ selected=2;
 updateScreen "full";
 while true; do
 
+    oldHeight=$height;
+
     # user key control
-    k=$(./keyInput.sh); # Get and analize the input
-    case $k in
+    k=$(./keyInput.sh); # Get the input
+    case $k in # analize the input
         EN) break;; # If enter pressed, exit
         UP) # If up arrow pressed
             selected=$(($selected-1)); # Selector go up
@@ -148,8 +161,12 @@ while true; do
             start=0;
         fi
     else
-        updateScreen "normal";
-        continue;
+        if [ $oldHeight -eq $height ]; then # If no change on the height of the screen
+            updateScreen "normal";
+            continue;
+        else # else, update the "full" screen with the new height
+            init "list"; # Clear screen, get new height based on the title, titleGap and print it with the fixed position
+        fi
     fi
     updateScreen "full";
 done
