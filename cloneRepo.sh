@@ -88,7 +88,6 @@ updateScreen(){
             tput cup $(($titleH+$idx+$titleSpace));
             index=$(( ($start+$i) % $repoL + 1));#Get the lenght of the element
             text=$(getLine temp.txt $index 1);
-            printf "000 $repoL - $index 000"
 
             if [ $i -eq $selected ]; then
                 setMessage $text 3 $sBG;
