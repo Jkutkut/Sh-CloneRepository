@@ -2,7 +2,7 @@
 
 This Shell Script file enable us to clone a repository from our github without using the git syntax.
 
-**Disclaimer:** please do the quick setup before using this code for the first time.
+**Disclaimer:** please do the [quick setup](#Quick-setup) before using this code for the first time.
 
 ## How it works:
 
@@ -10,10 +10,14 @@ Once the code is running, type the name of the repository you want to clone and 
 
 ![Main screen](Res/main-screen.png)
 
-However, you can change some settings before cloning the repository (typing ```settings``` when asked for the name of the repository), such us:
-- User name: 
-- Directory to store the repository on your device:
+They are some extra features to boost the experience:
 
+### Settings menu:
+However, you can change some settings before cloning the repository (typing ```settings``` when asked for the name of the repository):
+
+![Settings-menu](Res/settings.png)
+
+### List menu:
 Furthermore, you can select the repository from your account by using the option ```list``` instead of typing it manually (specially usefull when you don't remember the exact name). Once selected, this screen will appear:
 
 ![Repository-list](Res/list-repo.png)
