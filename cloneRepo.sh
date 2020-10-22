@@ -1,4 +1,4 @@
-# !/bin/sh
+# !/usr/bin/sh
 
 #colors:
 NC='\033[0m' # No Color
@@ -88,6 +88,7 @@ updateScreen(){
             tput cup $(($titleH+$idx+$titleSpace));
             index=$(( ($start+$i) % $repoL + 1));#Get the lenght of the element
             text=$(getLine temp.txt $index 1);
+            printf "000 $repoL - $index 000"
 
             if [ $i -eq $selected ]; then
                 setMessage $text 3 $sBG;
@@ -202,16 +203,17 @@ while true; do
       #     - Have a file with the repos (one each line). Then edit the line to copy the content to a file named "temp.txt"
       #     - Use the following code to get it:
 
+      ## Get repos as JSON | keep fullname | remove 1º " symbol on each repo | remove 2º " on each repo >> to file named temp.txt
       # curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
       # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
       
       # cp repositorios.txt temp.txt; # Option 2
 
       # At this point, the code should have the temp.txt file created
-      if [ -e temp.txt ];then # If file exist
-        /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
-        repoL=$(($(wc -l < temp.txt) + 1)); #Length of the file with the repo names
-      else # if file does not exist, error
+      /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';
+      repoL=$(wc -l < temp.txt); #Length of the file with the repo names (this is the correct value, last line is an empty line)
+
+      if [ ! -e temp.txt ];then # if file does not exist, error
         echo "\n${RED}~~~~~~~~  ERROR ~~~~~~~~\nNot able to get the repositories. Please check the parameters used are correct and the README.md file.${NC}";
         sleep 1;
         echo "Going back to main section in 5s"
@@ -220,7 +222,7 @@ while true; do
       fi
 
       start=0;
-      selected=2;
+      selected=0;
       updateScreen "full";
       while true; do
         oldHeight=$height;
