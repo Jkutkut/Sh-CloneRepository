@@ -42,7 +42,7 @@ In order to boost this code, please consider following this steps:
 
     We have different ways to get the repositories:
     - Auto: This option connects directly to your github account and gets the names of the repositories automatically and dynamically. This way, once selected the list mode, all the actual repositories on your Github account.
-    To activate this feature, the SSH protocol and a Github's Personal access token are neccesary: the following code will be uncommented and the token should be filled (replace XXXXX with the token, and use it at your own risk):
+    To activate this feature, the SSH protocol and a Github's Personal access token are neccesary. You can obtain the token on [this link](https://github.com/settings/tokens), generating a new one with the "public_repo" option. The following code will be uncommented and the token should be filled (replace XXXXX with the token, and use it at your own risk):
     ```
         curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" | jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
     ```
