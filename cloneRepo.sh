@@ -183,7 +183,11 @@ while true; do
           ;;
           directory|dir|d)
             ask "Enter the custom directory" "";
-            fullDirectory=$askResponse;
+            case $askResponse in
+              /*) fullDirectory=$askResponse;;
+              *) fullDirectory=$PWD/$askResponse;;
+            esac
+            # fullDirectory=$askResponse;
           ;;
           exit|e)
             break;
