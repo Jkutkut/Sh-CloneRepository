@@ -282,10 +282,12 @@ Atempting to clone the reposititory:
 \tRepository name: ${YELLOW}$repoName${NC}
 \tDirectory to save it: ${YELLOW}$fullDirectory${NC}
 "
-(cd $fullDirectory ||
-endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found") &&
+
 (git clone git@github.com:$u/$repoName.git ||
 endCode "fail" "Not possible to clone") &&
+(mv $repoName $fullDirectory ||
+(rm -rf $repoName &&
+endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found or this code does not have the correct permissions")) &&
 
 echo "--------------------------------------
 ${LGREEN}
