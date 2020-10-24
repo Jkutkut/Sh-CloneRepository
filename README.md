@@ -26,6 +26,10 @@ In order to select it, use the arrows _UP_ and _DOWN_ to navigate and the _ENTER
 
 
 ## Quick setup:
+Please install jq, a simple Command-line JSON processor. This can be acomplished by the use of the command:
+
+        sudo apt install jq
+
 In order to boost this code, please consider following this steps:
 - Constants declaration:
     - Add your Git username.
