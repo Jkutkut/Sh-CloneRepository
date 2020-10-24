@@ -1,2 +1,5 @@
-necesita jq
-al ejecutar con ./, el color azul de ask no funciona
+- necesita jq
+- al ejecutar con ./, el color azul de ask no funciona
+- no detecta directorios relativos
+- se clona en el mismo directorio en el que está el archivo
+- Se obtiene la lista de otros usuarios usando tu passw
