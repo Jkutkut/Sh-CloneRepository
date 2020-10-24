@@ -1,3 +1,2 @@
-- [ ] al ejecutar con ./, el color azul de ask no funciona
 - [ ] no detecta directorios relativos
 - [ ] Se obtiene la lista de otros usuarios usando tu passw

@@ -1,4 +1,4 @@
-# !/usr/bin/sh
+#!/usr/bin/sh
 
 #colors:
 NC='\033[0m' # No Color
