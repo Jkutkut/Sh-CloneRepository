@@ -1,2 +1,1 @@
 - [ ] no detecta directorios relativos
-- [ ] Se obtiene la lista de otros usuarios usando tu passw
