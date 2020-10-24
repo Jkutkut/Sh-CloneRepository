@@ -300,6 +300,13 @@ Atempting to clone the reposititory:
 git clone git@github.com:$u/$repoName.git ||
 endCode "fail" "Not possible to clone";
 
+if ( [ $# -eq 1 ] && [ $1 = "fork" ] ); then
+  cd $repoName
+  hub fork
+  cd ..
+fi ||
+endCode "fail" "Not possible to fork"
+
 if [ ! $(echo $(pwd)) = $fullDirectory -a ! $(echo $(pwd)/) = $fullDirectory ]; then # if not the same directory
   mv $repoName $fullDirectory; # Move the repository to a correct destination
 fi || 
