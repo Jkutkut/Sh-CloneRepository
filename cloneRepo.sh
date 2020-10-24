@@ -156,6 +156,7 @@ fullDirectory=~/github/; # Default dir to store the repository
 
 
 # Code:
+defUser=$u; # Store the default user
 trap 'init' WINCH # When window resized, update screen with the new size
 trap "endCode fail \"code force-ended\"" 2; # If code forced to end, run endCode first
 
@@ -202,11 +203,20 @@ while true; do
       #     - Have a file with the repos (one each line). Then edit the line to copy the content to a file named "temp.txt"
       #     - Use the following code to get it:
 
+      # *********** OPTION 1 ***********
       ## Get repos as JSON | keep fullname | remove 1º " symbol on each repo | remove 2º " on each repo >> to file named temp.txt
-      # curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
-      # jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
       
-      # cp repositorios.txt temp.txt; # Option 2
+      # if [ $u = $defUser ]; then 
+      #   # If the user has not being changed using the settings option: use the credentials to get the private repositories
+      #   curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+      # else # If user not changed: use no credentials
+      #   curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+      # fi
+      
+      # *********** OPTION 2 ***********
+      # cp XXXXXXXXXX temp.txt;
 
       # At this point, the code should have the temp.txt file created
       /usr/bin/printf '\r\033[0;32m\xE2\x9C\x94\033[0m All repositories obtained:\n';

@@ -45,11 +45,26 @@ In order to boost this code, please consider following this steps:
 - List mode:
 
     We have different ways to get the repositories:
-    - Auto: This option connects directly to your github account and gets the names of the repositories automatically and dynamically. This way, once selected the list mode, all the actual repositories on your Github account.
-    To activate this feature, the SSH protocol and a Github's Personal access token are neccesary. You can obtain the token on [this link](https://github.com/settings/tokens), generating a new one with the "public_repo" option. The following code will be uncommented and the token should be filled (replace XXXXX with the token, and use it at your own risk):
+
+    - Auto: This option connects directly to github and gets the names of the repositories avalible automatically and dynamically. This way, a simple selection menu will appear where you can select the repository you want to clone.  
+    There are two situations here: Getting the repositories from our account and getting them from other's. To accomplish the first one, using a Github's Personal access token will provide us also with the private repositories from our account (use [this link](https://github.com/settings/tokens) to get it). This way, in both cases we can get all the repositories easily.  
+    To enable this feature, uncomment the following code and overwrite "XXXXXXX" with the token (use this feature at your own risk):
     ```
-        curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" | jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
-    ```
+    if [ $u = $defUser ]; then
+      # If the user has not being changed using the settings option: use the credentials to get the private repositories
+      curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+    else # If user not changed: use no credentials
+      curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+    fi
+    ```  
+    **Note**: In order to skip adding the token, just uncomment the lines under the else stament.
+
+
+
+
+
     - Manual: This option uses as repository names the lines of a file given. This features enables an easy setup for different Git servers.
     To activate this feature, modify the name of the file in the following line (In this example, the name used is repositorios.txt):
     ```
