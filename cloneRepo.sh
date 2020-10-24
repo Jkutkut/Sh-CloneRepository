@@ -203,8 +203,8 @@ while true; do
       #     - Use the following code to get it:
 
       ## Get repos as JSON | keep fullname | remove 1º " symbol on each repo | remove 2º " on each repo >> to file named temp.txt
-      # curl -u $u:XXXXXXXXXXXXXXXXXXXXXX -s "https://api.github.com/users/$u/repos?type=all&per_page=100" |
-      # jq '.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' >> temp.txt; # Option 1
+      # curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      # jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
       
       # cp repositorios.txt temp.txt; # Option 2
 
