@@ -293,11 +293,14 @@ Atempting to clone the reposititory:
 \tDirectory to save it: ${YELLOW}$fullDirectory${NC}
 "
 
-(git clone git@github.com:$u/$repoName.git ||
-endCode "fail" "Not possible to clone") &&
-(mv $repoName $fullDirectory ||
+git clone git@github.com:$u/$repoName.git ||
+endCode "fail" "Not possible to clone";
+
+if [ ! $(echo $(pwd)) = $fullDirectory -a ! $(echo $(pwd)/) = $fullDirectory ]; then # if not the same directory
+  mv $repoName $fullDirectory; # Move the repository to a correct destination
+fi || 
 (rm -rf $repoName &&
-endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found or this code does not have the correct permissions")) &&
+endCode "fail" "The directory ${NC}$fullDirectory${RED} was not found or this code does not have the correct permissions");
 
 echo "--------------------------------------
 ${LGREEN}
