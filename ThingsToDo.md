@@ -1,1 +1,2 @@
-- [ ] no detecta directorios relativos
+# Things to do:
+- [ ] 
