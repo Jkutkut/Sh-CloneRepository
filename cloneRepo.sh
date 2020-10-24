@@ -209,10 +209,10 @@ while true; do
       # if [ $u = $defUser ]; then 
       #   # If the user has not being changed using the settings option: use the credentials to get the private repositories
       #   curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
-      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
       # else # If user not changed: use no credentials
       #   curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
-      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
+      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
       # fi
       
       # *********** OPTION 2 ***********
