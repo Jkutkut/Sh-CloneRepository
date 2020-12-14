@@ -42,6 +42,7 @@ In order to boost this code, please consider following this steps:
     u="Jkutkut"; # Default user name
     fullDirectory=~/github/; # Default dir to store the repository
     ```
+    **Note:** The protocol used to do the cloning (e.i. SSH) can also be changed using the variable "_protocol_".
 - List mode:  
 Please install jq, a simple Command-line JSON processor, which will come in handy. This can be acomplished by the use of the command:
 

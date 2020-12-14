@@ -153,6 +153,7 @@ endCode(){
 # Constants:
 u="Jkutkut"; # Default user name
 fullDirectory=~/github/; # Default dir to store the repository
+protocol="ssh"; # Protocol to use when cloning
 
 
 # Code:
@@ -297,7 +298,11 @@ Atempting to clone the reposititory:
 \tDirectory to save it: ${YELLOW}$fullDirectory${NC}
 "
 
-git clone git@github.com:$u/$repoName.git ||
+if [ $protocol = "ssh" ]; then
+  git clone git@github.com:$u/$repoName.git; ## Using ssh protocol
+else
+  git clone https://github.com/$u/$repoName.git; ## "Common" way
+fi ||
 endCode "fail" "Not possible to clone";
 
 if ( [ $# -eq 1 ] && [ $1 = "fork" ] ); then
