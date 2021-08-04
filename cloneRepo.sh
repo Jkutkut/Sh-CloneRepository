@@ -1,6 +1,9 @@
 #!/usr/bin/sh
 
-#colors:
+# Load variables
+. /home/$USER/github/.variables/.cloneRepoData.sh
+
+# Colors:
 NC='\033[0m' # No Color
 sBG='\e[1;7m';
 rBG='\e[1;41m';
@@ -13,7 +16,6 @@ LGREEN='\033[1;32m';
 YELLOW='\033[1;33m';
 LBLUE='\033[1;34m';
 TITLE='\033[38;5;33m';
-
 
 # FUNCTIONS
 askResponse=""; #When executing the function ask(), the response will be stored here
@@ -96,8 +98,7 @@ updateScreen(){
             fi
             idx=$(($idx+1));
         done
-    else
-        
+    elif [ "normal" = $1 ]; then
         for i in $(seq -1 1); do
             line=$(($titleH+$titleSpace+$selected+$i));
             if [ $(($selected+$i)) -gt $height ] || [ $(($selected+$i)) -eq -1 ]; then 
@@ -211,14 +212,14 @@ while true; do
       # *********** OPTION 1 ***********
       ## Get repos as JSON | keep fullname | remove 1º " symbol on each repo | remove 2º " on each repo >> to file named temp.txt
       
-      # if [ $u = $defUser ]; then 
-      #   # If the user has not being changed using the settings option: use the credentials to get the private repositories
-      #   curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
-      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
-      # else # If user not changed: use no credentials
-      #   curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
-      #   jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
-      # fi
+      if [ $u = $defUser ]; then 
+        # If the user has not being changed using the settings option: use the credentials to get the private repositories
+        curl -H "Authorization: token $TOKEN" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+        jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
+      else # If user changed: use no credentials
+        curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+        jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort >> temp.txt;
+      fi
       
       # *********** OPTION 2 ***********
       # cp XXXXXXXXXX temp.txt;

@@ -44,26 +44,29 @@ In order to boost this code, please consider following this steps:
     ```
     **Note:** The protocol used to do the cloning (e.i. SSH) can also be changed using the variable "_protocol_".
 - List mode:  
-Please install jq, a simple Command-line JSON processor, which will come in handy. This can be acomplished by the use of the command:
+Please install jq, a simple Command-line JSON processor, which will come in handy. This can be accomplished by the use of the command:
 
         sudo apt install jq
 
     We have different ways to get the repositories:
 
-    - Auto: This option connects directly to github and gets the names of the repositories avalible automatically and dynamically. This way, a simple selection menu will appear where you can select the repository you want to clone.  
+    - Auto: This option connects directly to github and gets the names of the repositories available automatically and dynamically. This way, a simple selection menu will appear where you can select the repository you want to clone.  
     There are two situations here: Getting the repositories from our account and getting them from other's. To accomplish the first one, using a Github's Personal access token will provide us also with the private repositories from our account (use [this link](https://github.com/settings/tokens) to get it). This way, in both cases we can get all the repositories easily.  
-    To enable this feature, uncomment the following code and overwrite "XXXXXXX" with the token (use this feature at your own risk):
+    To enable this feature, use the line at the following command (**/home/$USER/github/.variables/cloneRepoData.sh**) to store the token in a file using the syntax:  
+    *#!/bin/sh*  
+    *export TOKEN="XXXX"*  
+
+    If you prefer, you can overwrite "$TOKEN" with the token (use this feature at your own risk). The code can be found here:
     ```
     if [ $u = $defUser ]; then
-      # If the user has not being changed using the settings option: use the credentials to get the private repositories
-      curl -H "Authorization: token XXXXXXXXXXXXXXXXXXXXXXXXXX" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
+      curl -H "Authorization: token $TOKEN" -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
       jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
-    else # If user not changed: use no credentials
+    else
       curl -s "https://api.github.com/search/repositories?q=user:$u&type:all&per_page=100" |
       jq '.items|.[]|.full_name' | cut -d'/' -f 2 | sed 's/.$//' | sort;
     fi
     ```  
-    **Note**: In order to skip adding the token, just uncomment the lines under the else stament.
+    **Note**: In order to skip adding the token, just keep the lines under the else statement.
 
 
 
